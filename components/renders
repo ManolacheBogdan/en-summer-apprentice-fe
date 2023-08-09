@@ -1,0 +1,70 @@
+function getHomePageTemplate() {
+    return `
+     <div id="content" >
+        <img src="./src/assets/events2.png" alt="summer">
+        <div class="events flex items-center justify-center flex-wrap">
+        </div>
+      </div>
+    `;
+  }
+  
+  function renderEventCard(event){
+    const eventCard = documen.createElement('div');
+    eventCard.classList.add('event-card');
+  
+    const eventImageUrls={
+      1:"img src='./src/assets/untold.jpeg'",
+      2:"img src='./src/assets/electric.jpg'",
+      3:"img src='./src/assets/ucl final.jpeg'"
+    };
+    const eventIndex = event.eventId; 
+      const contentMarkup = `
+      <header>
+        <h2 class="event-title text-2xl font-bold">${event.eventName}</h2>
+      </header>
+      <div class="content">
+        <img src="${eventImageUrls[eventIndex] || 'URL_IMAGINE_LIPSA'}" alt="${event.eventName}" class="event-image w-full height-200 rounded object-cover mb-4">
+        <p class="description text-gray-700">${event.eventDescription}</p>
+        <p class="date">${formatDate(event.startDate)} - ${formatDate(event.endDate)}</p>
+
+      <button class="add-to-cart-btn">Add to Cart</button>
+      <div class="quantity">
+        <button class="decrement">-</button>
+        <span class="quantity-label">0</span>
+        <button class="increment">+</button>
+      </div>
+      </div>
+    `;
+    eventCard.innerHTML = contentMarkup;
+    return eventCard;
+
+  }
+
+
+export function renderHomePage(eventData) {
+    const mainContentDiv = document.querySelector('.main-content-component');
+    mainContentDiv.innerHTML = getHomePageTemplate();
+
+    const eventsContainer = document.querySelector('.events');
+    eventData.forEach((event) => {
+        const eventCard = renderEventCard(event);
+        eventsContainer.appendChild(eventCard);
+      });
+    }
+    
+
+
+export function renderOrdersPage(categories) {
+    const mainContentDiv = document.querySelector('.main-content-component');
+    mainContentDiv.innerHTML = getOrdersPageTemplate();
+  }
+  
+  function formatDate(dateArray) {
+    const [year, month, day] = dateArray;
+    const formattedDate = new Date(year, month - 1, day).toLocaleDateString('ro-RO', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+    return formattedDate;
+  }

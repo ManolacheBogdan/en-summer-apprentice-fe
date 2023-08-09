@@ -22,11 +22,12 @@ h1 {
 }
 
 .event-title {
-  color: #de411b
+  color: #9a1bde
 }
 
 .event img {
   height: 150px;
+  width: 30px;
 }
 
 #ticketType {

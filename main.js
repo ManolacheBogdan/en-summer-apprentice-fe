@@ -1,3 +1,8 @@
+import {renderHomePage} from './src/components/renders';
+import {renderOrdersPage} from './src/components/renders';
+import {fetchEventData} from './src/components/fetchEventData';
+
+
 // Navigate to a specific URL
 function navigateTo(url) {
   history.pushState(null, null, url);
@@ -7,7 +12,7 @@ function navigateTo(url) {
 function getHomePageTemplate() {
   return `
    <div id="content" >
-      <img src="./src/assets/Endava.png" alt="summer">
+      <img src="./src/assets/events2.png" alt="summer">
       <div class="events flex items-center justify-center flex-wrap">
       </div>
     </div>
@@ -19,7 +24,7 @@ function getOrdersPageTemplate() {
     <div id="content">
     <h1 class="text-2xl mb-4 mt-8 text-center">Purchased Tickets</h1>
     </div>
-  `;
+    `;
 }
 
 function setupNavigationEvents() {
@@ -56,54 +61,15 @@ function setupInitialPage() {
   renderContent(initialUrl);
 }
 
-function renderHomePage() {
-  const mainContentDiv = document.querySelector('.main-content-component');
-  mainContentDiv.innerHTML = getHomePageTemplate();
-  // Sample hardcoded event data
-  const eventData = {
-    id: 1,
-    description: 'Sample event description.',
-    img: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80',
-    name: 'Sample Event',
-    ticketCategories: [
-      { id: 1, description: 'General Admission' },
-      { id: 2, description: 'VIP' },
-    ],
-  };
-  // Create the event card element
-  const eventCard = document.createElement('div');
-  eventCard.classList.add('event-card'); 
-  // Create the event content markup
-  const contentMarkup = `
-    <header>
-      <h2 class="event-title text-2xl font-bold">${eventData.name}</h2>
-    </header>
-    <div class="content">
-      <img src="${eventData.img}" alt="${eventData.name}" class="event-image w-full height-200 rounded object-cover mb-4">
-      <p class="description text-gray-700">${eventData.description}</p>
-    </div>
-  `;
-
-  eventCard.innerHTML = contentMarkup;
-  const eventsContainer = document.querySelector('.events');
-  // Append the event card to the events container
-  eventsContainer.appendChild(eventCard);
-}
-
-function renderOrdersPage(categories) {
-  const mainContentDiv = document.querySelector('.main-content-component');
-  mainContentDiv.innerHTML = getOrdersPageTemplate();
-}
-
-// Render content based on URL
-function renderContent(url) {
+async function renderContent(url) {
   const mainContentDiv = document.querySelector('.main-content-component');
   mainContentDiv.innerHTML = '';
 
   if (url === '/') {
-    renderHomePage();
+    const eventData = await fetchEventData();
+    renderHomePage(eventData);
   } else if (url === '/orders') {
-    renderOrdersPage()
+    renderOrdersPage();
   }
 }
 
