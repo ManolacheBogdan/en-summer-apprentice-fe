@@ -104,17 +104,37 @@ h1 {
   margin-bottom: 40px;
 }
 
-.decrement,
-.increment {
-  background-color: #9a1bde;
-  color: #333;
-  border: none;
-  padding: 5px 10px;
-  margin: 0 5px;
-  cursor: pointer;
+.quantity {
+  display: flex;
+  align-items: center;
 }
 
 .quantity-label {
   font-weight: bold;
-  margin: 0 10px;
+  margin-right: 10px;
+}
+
+.quantity-input {
+  width: 50px;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px;
+}
+
+.decrement,
+.increment {
+  background-color: #9a1bde;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  margin: 0 5px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.add-to-cart-btn:hover,
+.decrement:hover,
+.increment:hover {
+  background-color: #7f0fae;
 }

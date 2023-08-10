@@ -27,19 +27,19 @@ function getOrdersPageTemplate() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-document.addEventListener('click', (event) => {
-  const target = event.target;
-  if (target.classList.contains('increment')) {
-    const quantityLabel = target.parentElement.querySelector('.quantity-label');
-    quantityLabel.textContent = parseInt(quantityLabel.textContent) + 1;
-  } else if (target.classList.contains('decrement')) {
-    const quantityLabel = target.parentElement.querySelector('.quantity-label');
-    const currentQuantity = parseInt(quantityLabel.textContent);
-    if (currentQuantity > 0) {
-      quantityLabel.textContent = currentQuantity - 1;
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+    if (target.classList.contains('increment')) {
+      const input = target.parentElement.querySelector('.quantity-input');
+      input.value = parseInt(input.value) + 1;
+    } else if (target.classList.contains('decrement')) {
+      const input = target.parentElement.querySelector('.quantity-input');
+      const currentValue = parseInt(input.value);
+      if (currentValue > 0) {
+        input.value = currentValue - 1;
+      }
     }
-  }
-});
+  });
 });
 
 

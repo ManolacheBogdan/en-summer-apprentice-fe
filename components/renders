@@ -40,7 +40,7 @@ function getHomePageTemplate() {
         <div class="quantity">
           <label for="ticketQuantity">Number of tickets:</label>
           <button class="decrement">-</button>
-          <span class="quantity-label">0</span>
+          <input type="number" class="quantity-input" value="0" min="0">
           <button class="increment">+</button>
         </div>
         
@@ -51,6 +51,8 @@ function getHomePageTemplate() {
     
       const decrementButton = eventCard.querySelector('.decrement');
       const incrementButton = eventCard.querySelector('.increment');
+      const addToCartButton = eventCard.querySelector('.add-to-cart-btn');
+      const quantityInput = eventCard.querySelector('.quantity-input');
       const quantityLabel = eventCard.querySelector('.quantity-label');
     
       let ticketQuantity = 0;
@@ -67,10 +69,9 @@ function getHomePageTemplate() {
         quantityLabel.textContent = ticketQuantity;
       });
     
-      const addToCartButton = eventCard.querySelector('.add-to-cart-btn');
       addToCartButton.addEventListener('click', () => {
         ticketQuantity = 0;
-        quantityLabel.textContent = ticketQuantity;
+        quantityInput.value = ticketQuantity; 
       });
     
       return eventCard;
