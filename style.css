@@ -24,6 +24,7 @@ h1 {
 .event-title {
   font-size: 1.5rem;
   margin-bottom: 10px;
+  color:#9a1bde;
 }
 
 .event-card {
@@ -137,4 +138,12 @@ h1 {
 .decrement:hover,
 .increment:hover {
   background-color: #7f0fae;
+}
+
+.background-image-container {
+  background-image: url('./src/assets/background.jpg');
+  background-size: cover;
+  background-position: center;
+  height: 300px; /* Set an appropriate height for your background */
+  margin-top: 20px; /* Adjust as needed */
 }
