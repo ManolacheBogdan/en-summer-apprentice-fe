@@ -26,6 +26,7 @@ function getOrdersPageTemplate() {
     `;
 }
 
+document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('click', (event) => {
   const target = event.target;
   if (target.classList.contains('increment')) {
@@ -39,6 +40,8 @@ document.addEventListener('click', (event) => {
     }
   }
 });
+});
+
 
 
 function setupNavigationEvents() {
