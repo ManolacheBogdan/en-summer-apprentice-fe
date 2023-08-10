@@ -15,14 +15,15 @@ function getHomePageTemplate() {
   
     const eventImageUrls = {
       1: "https://www.sportexclusiv.ro/wp-content/uploads/2014/04/craiova-volei-municipal-zalau-semifinala.jpg",
-      2: "https://w7.pngwing.com/pngs/976/987/png-transparent-metallica-musical-ensemble-logo-concert-megadeth-monochrome-vertebrate-fictional-character.png",
+      2: "https://cdn.aktual24.ro/wp-content/uploads/2019/08/metallica.jpg",
       3: "https://media.cancan.ro/vq4rLdc0y5uLLfpqyL_m0gE6aEY=/1260x709/smart/filters:contrast(5):format(webp):quality(80)/https%3A%2F%2Fwww.cancan.ro%2Fwp-content%2Fuploads%2F2017%2F12%2F17432221%2F2-liga-campionilor-poza-simpla.jpg",
       4: "https://cdn.romania-insider.com/sites/default/files/styles/article_large_image/public/2022-09/row_of_glasses_-_wine_tasting_photo_134803399_c_ekaterina_molchanova_dreamstime.com_.jpg",
       5: "https://api.kissfm.ro/resized/articole/2022/08/05/untold2022-0805-044857-lr52869-alivecoverage-ctl_d7444d4c5dbae65cb5aae84735a49dac.jpg?w=800&h=600&c=1"
     };
 
-   // console.log('eventStartDate', event.startDate,'eventEndDate', event.endDate);
-    const eventIndex = event.eventId; 
+    console.log('eventId', event.eventID);
+    console.log('event', event);
+    const eventIndex = event.eventID; 
       const contentMarkup = `
       <header>
         <h2 class="event-title text-2xl font-bold">${event.name}</h2>
@@ -53,7 +54,6 @@ function getHomePageTemplate() {
       const incrementButton = eventCard.querySelector('.increment');
       const addToCartButton = eventCard.querySelector('.add-to-cart-btn');
       const quantityInput = eventCard.querySelector('.quantity-input');
-      const quantityLabel = eventCard.querySelector('.quantity-label');
     
       let ticketQuantity = 0;
     
