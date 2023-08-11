@@ -1,5 +1,7 @@
 import { useStyle } from "./styles";
 import { postOrder } from "../../main";
+import { removeLoader, addLoader } from "./loader";
+import { fetchEventData } from "./fetchEventData";
 
 function getHomePageTemplate() {
     return `
@@ -15,6 +17,8 @@ function getHomePageTemplate() {
     return `
       <div id="content">
       <h1 class="text-2xl mb-4 mt-8 text-center">Purchased Tickets</h1>
+      <div class="orders flex items-center justify-center flex-wrap">
+      </div>
       </div>
     `;
   }
@@ -86,22 +90,16 @@ export function renderHomePage(eventData) {
         const eventCard = renderEventCard(event);
         eventsContainer.appendChild(eventCard);
       });
-
-      fetchTicketEvents().then((data) => {
-        setTimeout(() => {
-          removeLoader();
-        }, 800);
-        addEvents(data);
-      });
-    }
+  }
     
 
 
 export function renderOrdersPage(orderData) {
     const mainContentDiv = document.querySelector('.main-content-component');
     mainContentDiv.innerHTML = getOrdersPageTemplate();
-    const ordersContainer = mainContentDiv;
+    const ordersContainer = document.querySelector('.orders');
     orderData.forEach((order) => {
+      console.log('aici', order.NumberOfTickets);
         const orderCard = renderOrderCard(order);
         ordersContainer.appendChild(orderCard);
       });
@@ -110,28 +108,30 @@ export function renderOrdersPage(orderData) {
 
   function renderOrderCard(order){
     const orderCard = document.createElement('div');
-    orderCard.classList.add('order-card');
+    console.log('addd');
     const contentMarkupOrders = `
-    <div class="order-details">
-      <div class="order-field">
-        <span class="field-name">Order ID:</span>
-        <span class="field-value">${order.orderID}</span>
-      </div>
-      <div class="order-field">
-        <span class="field-name">Number of Tickets:</span>
-        <span class="field-value">${order.NumberOfTickets}</span>
-      </div>
-      <div class="order-field">
-        <span class="field-name">Ordered At:</span>
-        <span class="field-value">${formatDate(order.orderedAt)}</span>
-      </div>
-      <div class="order-field">
-        <span class="field-name">Total Price:</span>
-        <span class="field-value">${order.totalPrice}</span>
-      </div>
-      <div class="order-buttons">
-        <button class="edit-button">Edit</button>
-        <button class="delete-button">Delete</button>
+    <div class='orders-content'>
+      <div class="order-details">
+        <div class="order-field">
+          <span class="field-name">Order ID:</span>
+          <span class="field-value">${order.orderID}</span>
+        </div>
+        <div class="order-field">
+          <span class="field-name">Number of Tickets:</span>
+          <span class="field-value">${order.numberOfTickets}</span>
+        </div>
+        <div class="order-field">
+          <span class="field-name">Ordered At:</span>
+          <span class="field-value">${formatDate(order.orderedAt)}</span>
+        </div>
+        <div class="order-field">
+          <span class="field-name">Total Price:</span>
+          <span class="field-value">${order.totalPrice}</span>
+        </div>
+        <div class="order-buttons">
+          <button class="edit-button">Edit</button>
+          <button class="delete-button">Delete</button>
+        </div>
       </div>
     </div>
   `;

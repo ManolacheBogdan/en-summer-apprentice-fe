@@ -21,19 +21,14 @@ function getHomePageTemplate() {
   `;
 }
 
-async function fetchTicketEvents() {
-  const response = await fetch('http://localhost:8080/events/all');
-  const data = await response.json();
-  return data;
-}
-
-
 function getOrdersPageTemplate() {
   return `
     <div id="content">
     <h1 class="text-2xl mb-4 mt-8 text-center">Purchased Tickets</h1>
+    <div class="orders flex items-center justify-center flex-wrap">
     </div>
-    `;
+    </div>
+  `;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -97,6 +92,7 @@ async function renderContent(url) {
     renderHomePage(eventData);
   } else if (url === '/orders') {
     const orderData = await fetchOrders();
+    console.log("orderData", orderData);
     renderOrdersPage(orderData);
   }
 }
