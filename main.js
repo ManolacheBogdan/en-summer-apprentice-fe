@@ -1,6 +1,9 @@
-import {renderHomePage, renderOrdersPage} from './components/renders';
-import {fetchEventData} from './components/fetchEventData';
-
+import {renderHomePage, renderOrdersPage} from './src/components/renders';
+import {fetchEventData} from './src/components/fetchEventData';
+import {useStyle} from './src/components/styles';
+import {fetchOrders} from './src/components/fetchOrder';
+//npm import {removeLoader, addLoader} from './components/loader';
+//import {getTicketCategories} from './components/api/getTicketCategories';
 
 // Navigate to a specific URL
 function navigateTo(url) {
@@ -17,6 +20,13 @@ function getHomePageTemplate() {
     </div>
   `;
 }
+
+async function fetchTicketEvents() {
+  const response = await fetch('http://localhost:8080/events/all');
+  const data = await response.json();
+  return data;
+}
+
 
 function getOrdersPageTemplate() {
   return `
@@ -90,6 +100,72 @@ async function renderContent(url) {
     renderOrdersPage();
   }
 }
+
+
+export const postOrder = (id, ticketID, input) => {
+  const numberOfTickets = input.value;
+  console.log(id, ticketID, input.value);
+  if (parseInt(numberOfTickets)) {
+  fetch('http://localhost:8080/orders', {
+    method: "POST",
+    headers: {
+      "Content-Type": 'application/json',
+    },
+    body: JSON.stringify({
+      eventID: id, 
+      ticketCategoryID: ticketID,
+      noOfTickets: +numberOfTickets,
+      customerId: 5
+    }),
+  }).then(async (response) => {
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.message);
+    }
+    return data;
+  })
+  .then((data) => {
+    input.value = 0;
+    console.log('order succes');
+    // eslint-disable-next-line no-undef
+   // toastr.success('Order succesfully created!');
+  })
+  .catch((error) => {
+    console.error('error saving purchased event:', error);
+    // eslint-disable-next-line no-undef
+    // toastr.error('Error!');
+  })
+  .finally(() => {
+    //removeLoader();
+  });
+  } else {
+    // eslint-disable-next-line no-undef
+    //toastr.error('Please enter a valid number of tickets!');
+  }
+}
+
+export const createEvent = (eventData) => {
+    const eventElement = renderEventCard(eventData);
+    return eventElement;
+};
+
+/*
+document.addEventListener('click', (event) => {
+  const target = event.target;
+
+  if (target.classList.contains('add-to-cart-btn')) {
+    const eventCard = target.closest('.event-card');
+    const eventID = eventCard.getAttribute('data-event-id');
+    const ticketCategorySelect = eventCard.querySelector('#ticketCategories');
+    const ticketCategoryId = ticketCategorySelect.value;
+    const noOfTicketsInput = eventCard.querySelector('.quantity-input');
+    const noOfTickets = parseInt(noOfTicketsInput.value);
+    
+    addToCartButton(eventID, ticketCategoryId, noOfTickets);
+  }
+});*/
+
+
 
 // Call the setup functions
 setupNavigationEvents();

@@ -1,7 +1,7 @@
-export async function fetchEventData() {
+export async function fetchOrders() {
     try {
-      const response = await fetch('http://localhost:8080/events/all'); 
-      if (!response.ok) {
+        const response = await fetch('http://localhost:8080/orders');
+        if (!response.ok) {
         throw new Error('Network response was not ok');
       }
       const eventData = await response.json();
