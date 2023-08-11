@@ -94,10 +94,10 @@ async function renderContent(url) {
 
   if (url === '/') {
     const eventData = await fetchEventData();
-    console.log(eventData);
     renderHomePage(eventData);
   } else if (url === '/orders') {
-    renderOrdersPage();
+    const orderData = await fetchOrders();
+    renderOrdersPage(orderData);
   }
 }
 
@@ -149,21 +149,6 @@ export const createEvent = (eventData) => {
     return eventElement;
 };
 
-/*
-document.addEventListener('click', (event) => {
-  const target = event.target;
-
-  if (target.classList.contains('add-to-cart-btn')) {
-    const eventCard = target.closest('.event-card');
-    const eventID = eventCard.getAttribute('data-event-id');
-    const ticketCategorySelect = eventCard.querySelector('#ticketCategories');
-    const ticketCategoryId = ticketCategorySelect.value;
-    const noOfTicketsInput = eventCard.querySelector('.quantity-input');
-    const noOfTickets = parseInt(noOfTicketsInput.value);
-    
-    addToCartButton(eventID, ticketCategoryId, noOfTickets);
-  }
-});*/
 
 
 

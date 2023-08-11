@@ -3,6 +3,7 @@ body {
 }
 
 .events {
+  display: flex;
   justify-content: center;
   flex-wrap: wrap;
 }
@@ -15,16 +16,10 @@ h1 {
   color: #9a1bde;
 }
 
-.events {
-  display: flex;
-  flex-direction: column; 
-  align-items: center; 
-}
-
 .event-title {
   font-size: 1.5rem;
   margin-bottom: 10px;
-  color:#9a1bde;
+  color: #9a1bde;
 }
 
 .event-card {
@@ -34,21 +29,30 @@ h1 {
   margin-top: 50px;
   margin-bottom: 50px;
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
-  flex-direction: column; 
-  justify-content: center; 
-  text-align: center;
-}
-
-.event-card {
   display: block;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
 }
 
 .event-image {
   width: 100%;
   height: auto;
   border-radius: 8px;
-  margin-bottom: 10px;;
+  margin-bottom: 10px;
+}
 
+.order-card {
+  border: 3px solid;
+  padding: 20px;
+  width: 700px;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
 }
 
 .description {
@@ -66,6 +70,7 @@ h1 {
 }
 
 .actions {
+  display: flex;
   flex-wrap: wrap;
 }
 
@@ -81,7 +86,7 @@ h1 {
 }
 
 .link-item {
-  color: #9a1bde
+  color: #9a1bde;
 }
 
 .logo {
@@ -92,7 +97,6 @@ h1 {
 .add-btn {
   background-color: #9a1bde;
 }
-
 
 .add-to-cart-btn {
   background: #9a1bde;
@@ -123,6 +127,7 @@ h1 {
   padding: 5px;
 }
 
+
 .decrement,
 .increment {
   background-color: #9a1bde;
@@ -144,6 +149,21 @@ h1 {
   background-image: url('./src/assets/background.jpg');
   background-size: cover;
   background-position: center;
-  height: 300px; /* Set an appropriate height for your background */
-  margin-top: 20px; /* Adjust as needed */
+}
+
+.edit-button,
+.delete-button {
+  background-color: #9a1bde;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  margin: 5px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.edit-button:hover,
+.delete-button:hover {
+  background-color: #7f0fae;
 }

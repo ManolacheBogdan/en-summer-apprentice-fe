@@ -20,7 +20,6 @@ function getHomePageTemplate() {
   }
 
   function renderEventCard(event){
-    console.log('event', event);
     const eventCard = document.createElement('div');
     const inputClasses = useStyle('inputTicket');
     const addToCartBtnClasses = useStyle('addToCartBtn');
@@ -78,7 +77,6 @@ function getHomePageTemplate() {
   
 
 export function renderHomePage(eventData) {
-  //console.log('eventData', eventData);
     const mainContentDiv = document.querySelector('.main-content-component');
     mainContentDiv.innerHTML = ''+'<div class="loader"><i class="fa-solid fa-spinner fa-spin"></i></div>'
     mainContentDiv.innerHTML = getHomePageTemplate();
@@ -99,67 +97,48 @@ export function renderHomePage(eventData) {
     
 
 
-/*export function renderOrdersPage(categories) {
+export function renderOrdersPage(orderData) {
     const mainContentDiv = document.querySelector('.main-content-component');
     mainContentDiv.innerHTML = getOrdersPageTemplate();
-    const ordersContainer = document.querySelector('.order');
+    const ordersContainer = mainContentDiv;
     orderData.forEach((order) => {
-        const orderCard = renderEventCard(order);
+        const orderCard = renderOrderCard(order);
         ordersContainer.appendChild(orderCard);
       });
-  }*/
-
-
-export function renderOrdersPage() {
-    const mainContentDiv = document.querySelector('.main-content-component');
-    mainContentDiv.innerHTML = getOrdersPageTemplate();
-  
-    fetchOrders().then(ordersData => {
-      console.log('Fetched orders:', ordersData);
-  
-      const ordersContainer = document.createElement('div');
-      ordersContainer.classList.add('orders-container');
-  
-      ordersData.forEach(order => {
-        const orderCard = document.createElement('div');
-        orderCard.classList.add('order-card');
-  
-        const orderHtml = `
-          <div class="order-details">
-            <div class="order-field">
-              <span class="field-name">Order ID:</span>
-              <span class="field-value">${order.orderID}</span>
-            </div>
-            <div class="order-field">
-              <span class="field-name">Number of Tickets:</span>
-              <span class="field-value">${order.NumberOfTickets}</span>
-            </div>
-            <div class="order-field">
-              <span class="field-name">Ordered At:</span>
-              <span class="field-value">${order.orderedAt}</span>
-            </div>
-            <div class="order-field">
-              <span class="field-name">Total Price:</span>
-              <span class="field-value">${order.totalPrice}</span>
-            </div>
-            <div class="order-buttons">
-              <button class="edit-button">Edit</button>
-              <button class="delete-button">Delete</button>
-            </div>
-          </div>
-        `;
-  
-        orderCard.innerHTML = orderHtml;
-        ordersContainer.appendChild(orderCard);
-      });
-  
-      mainContentDiv.appendChild(ordersContainer);
-    });
   }
-  
 
 
-  
+  function renderOrderCard(order){
+    const orderCard = document.createElement('div');
+    orderCard.classList.add('order-card');
+    const contentMarkupOrders = `
+    <div class="order-details">
+      <div class="order-field">
+        <span class="field-name">Order ID:</span>
+        <span class="field-value">${order.orderID}</span>
+      </div>
+      <div class="order-field">
+        <span class="field-name">Number of Tickets:</span>
+        <span class="field-value">${order.NumberOfTickets}</span>
+      </div>
+      <div class="order-field">
+        <span class="field-name">Ordered At:</span>
+        <span class="field-value">${formatDate(order.orderedAt)}</span>
+      </div>
+      <div class="order-field">
+        <span class="field-name">Total Price:</span>
+        <span class="field-value">${order.totalPrice}</span>
+      </div>
+      <div class="order-buttons">
+        <button class="edit-button">Edit</button>
+        <button class="delete-button">Delete</button>
+      </div>
+    </div>
+  `;
+    orderCard.innerHTML = contentMarkupOrders;
+    return orderCard; 
+  }
+
   
  function formatDate(dateArray) {
   //console.log('eventDateArray',dateArray);
@@ -167,4 +146,5 @@ export function renderOrdersPage() {
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
   const formattedDate = new Date(year, month - 1, day).toLocaleDateString('ro-RO', options);
   return formattedDate;
+
 }
