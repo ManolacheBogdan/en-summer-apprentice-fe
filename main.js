@@ -2,7 +2,8 @@ import {renderHomePage, renderOrdersPage} from './src/components/renders';
 import {fetchEventData} from './src/components/fetchEventData';
 import {useStyle} from './src/components/styles';
 import {fetchOrders} from './src/components/fetchOrder';
-//npm import {removeLoader, addLoader} from './components/loader';
+import {removeLoader, addLoader} from './src/components/loader';
+import { applyFilter, clearFilters } from './src/components/renders';
 //import {getTicketCategories} from './components/api/getTicketCategories';
 
 // Navigate to a specific URL
@@ -21,6 +22,8 @@ function getHomePageTemplate() {
   `;
 }
 
+
+
 function getOrdersPageTemplate() {
   return `
     <div id="content">
@@ -30,24 +33,6 @@ function getOrdersPageTemplate() {
     </div>
   `;
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  document.addEventListener('click', (event) => {
-    const target = event.target;
-    if (target.classList.contains('increment')) {
-      const input = target.parentElement.querySelector('.quantity-input');
-      input.value = parseInt(input.value) + 1;
-    } else if (target.classList.contains('decrement')) {
-      const input = target.parentElement.querySelector('.quantity-input');
-      const currentValue = parseInt(input.value);
-      if (currentValue > 0) {
-        input.value = currentValue - 1;
-      }
-    }
-  });
-});
-
-
 
 function setupNavigationEvents() {
   const navLinks = document.querySelectorAll('nav a');
@@ -92,8 +77,9 @@ async function renderContent(url) {
     renderHomePage(eventData);
   } else if (url === '/orders') {
     const orderData = await fetchOrders();
+    const eventData = await fetchEventData();
     console.log("orderData", orderData);
-    renderOrdersPage(orderData);
+    renderOrdersPage(orderData, eventData);
   }
 }
 
@@ -102,6 +88,7 @@ export const postOrder = (id, ticketID, input) => {
   const numberOfTickets = input.value;
   console.log(id, ticketID, input.value);
   if (parseInt(numberOfTickets)) {
+  addLoader();
   fetch('http://localhost:8080/orders', {
     method: "POST",
     headers: {
@@ -123,20 +110,19 @@ export const postOrder = (id, ticketID, input) => {
   .then((data) => {
     input.value = 0;
     console.log('order succes');
-    // eslint-disable-next-line no-undef
-   // toastr.success('Order succesfully created!');
+    toastr.success('Order succesfully created!');
   })
   .catch((error) => {
     console.error('error saving purchased event:', error);
-    // eslint-disable-next-line no-undef
-    // toastr.error('Error!');
+     toastr.error('Error!');
   })
   .finally(() => {
-    //removeLoader();
+    setTimeout(() => {
+      removeLoader();
+    }, 800);
   });
   } else {
-    // eslint-disable-next-line no-undef
-    //toastr.error('Please enter a valid number of tickets!');
+      toastr.error('Please enter a valid number of tickets!');
   }
 }
 
@@ -145,7 +131,16 @@ export const createEvent = (eventData) => {
     return eventElement;
 };
 
+function setupFilterEvent() {
+  const applyFilterButton = document.getElementById('applyFilter');
+  console.log("ApplyFilter", applyFilterButton);
+  applyFilterButton.addEventListener('click', applyFilter);
+}
 
+function setupClearFilter() {
+  const clearFiltersButton = document.getElementById('clearFilters');
+  clearFiltersButton.addEventListener('click', clearFilters);
+}
 
 
 // Call the setup functions
@@ -153,3 +148,5 @@ setupNavigationEvents();
 setupMobileMenuEvent();
 setupPopstateEvent();
 setupInitialPage();
+setupFilterEvent();
+setupClearFilter();

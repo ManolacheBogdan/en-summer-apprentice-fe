@@ -3,9 +3,9 @@ body {
 }
 
 .events {
-  display: flex;
+  display:flex;
   justify-content: center;
-  flex-wrap: wrap;
+  flex-wrap:wrap;
 }
 
 h1 {
@@ -41,24 +41,12 @@ h1 {
   border-radius: 8px;
   margin-bottom: 10px;
 }
-
-.order-card {
-  border: 3px solid;
+.orders-content {
+  border: 1px solid black;
   padding: 20px;
-  width: 700px;
-  margin-top: 50px;
-  margin-bottom: 50px;
+  margin: 20px 0;
+  
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
-  display:flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-}
-.order-content{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 }
 
 .description {
@@ -134,22 +122,7 @@ h1 {
 }
 
 
-.decrement,
-.increment {
-  background-color: #9a1bde;
-  color: #fff;
-  border: none;
-  padding: 5px 10px;
-  margin: 0 5px;
-  cursor: pointer;
-  border-radius: 4px;
-}
 
-.add-to-cart-btn:hover,
-.decrement:hover,
-.increment:hover {
-  background-color: #7f0fae;
-}
 
 .background-image-container {
   background-image: url('./src/assets/background.jpg');
@@ -172,4 +145,42 @@ h1 {
 .edit-button:hover,
 .delete-button:hover {
   background-color: #7f0fae;
+}
+
+
+.filter-buttons {
+  margin-top: 10px;
+  margin-left: 55px;
+  display: flex;
+  gap: 20px;
+}
+
+.filter-buttons button {
+  padding: 8px 16px;
+  background-color: #7f0fae;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.filter-buttons button:hover {
+  background-color: #7f0fae;
+}
+
+.filter-inputs {
+  margin-left: 55px;
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.filter-inputs input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.filter-inputs input[type="number"] {
+  width: 150px;
 }
