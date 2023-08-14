@@ -1,8 +1,8 @@
 import {fetchEventData} from './src/components/Api/fetchEventData';
 import {fetchOrders} from './src/components/Api/fetchOrder';
 import {removeLoader, addLoader} from './src/components/loader';
-import { renderEventCard, renderOrderCard } from './src/components/renderEvent';
-//import { renderOrderCard } from './src/components/renderOrder';
+import { renderEventCard } from './src/components/renderEvent';
+import { renderOrder } from './src/components/renderOrder';
 
 // Navigate to a specific URL
 function navigateTo(url) {
@@ -69,6 +69,7 @@ export function renderHomePage(eventData) {
     
   
   
+
   export function renderOrdersPage(orderData, eventData) {
     const mainContentDiv = document.querySelector('.main-content-component');
     mainContentDiv.innerHTML = getOrdersPageTemplate();
@@ -77,7 +78,7 @@ export function renderHomePage(eventData) {
     ordersContainer.innerHTML = '';
     orderData.forEach((order) => {
         const event = eventData.find((event) => event.eventID === order.eventID);
-        const orderCard = renderOrderCard(order);
+        const orderCard = renderOrder(order);
         ordersContainer.appendChild(orderCard);
       });
       setTimeout(() => {
@@ -130,7 +131,6 @@ async function renderContent(url) {
   } else if (url === '/orders') {
     const orderData = await fetchOrders();
     const eventData = await fetchEventData();
-    console.log("orderData", orderData);
     renderOrdersPage(orderData, eventData);
   }
 }

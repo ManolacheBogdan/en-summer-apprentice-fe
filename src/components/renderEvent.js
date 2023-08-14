@@ -1,5 +1,6 @@
 import { formatDate } from "../utils";
-import {useStyle} from "./styles"
+import {useStyle} from './styles';
+import { addLoader, removeLoader } from './loader';
 
 export function renderEventCard(event){
     const eventCard = document.createElement('div');
