@@ -169,18 +169,24 @@ h1 {
 }
 
 .filter-inputs {
-  margin-left: 55px;
   margin-top: 10px;
   display: flex;
-  gap: 10px;
 }
 
 .filter-inputs input {
   padding: 8px;
-  border: 1px solid #ccc;
+  border: 3px solid #7f0fae;
   border-radius: 4px;
 }
 
 .filter-inputs input[type="number"] {
   width: 150px;
+}
+
+.filter input{
+  padding: 8px;
+  border: 2px solid #7f0fae;
+  border-radius: 4px;
+  margin-left: 55px;
+  margin-top: 10px;
 }

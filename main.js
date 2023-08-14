@@ -1,38 +1,90 @@
-import {renderHomePage, renderOrdersPage} from './src/components/renders';
-import {fetchEventData} from './src/components/fetchEventData';
-import {useStyle} from './src/components/styles';
-import {fetchOrders} from './src/components/fetchOrder';
+import {fetchEventData} from './src/components/Api/fetchEventData';
+import {fetchOrders} from './src/components/Api/fetchOrder';
 import {removeLoader, addLoader} from './src/components/loader';
-import { applyFilter, clearFilters } from './src/components/renders';
-//import {getTicketCategories} from './components/api/getTicketCategories';
+import { renderEventCard, renderOrderCard } from './src/components/renderEvent';
+//import { renderOrderCard } from './src/components/renderOrder';
 
 // Navigate to a specific URL
 function navigateTo(url) {
   history.pushState(null, null, url);
   renderContent(url);
 }
-// HTML templates
 function getHomePageTemplate() {
   return `
    <div id="content" >
-      <img src="./src/assets/events2.png" alt="summer">
+      <img src="./src/assets/events2.png" alt="summer" width="3200px">
+      <div class="filter">
+        <input type="text" id="eventNameFilter" placeholder="Filter by Name">
+      </div>
       <div class="events flex items-center justify-center flex-wrap">
       </div>
     </div>
   `;
 }
 
-
-
 function getOrdersPageTemplate() {
   return `
     <div id="content">
     <h1 class="text-2xl mb-4 mt-8 text-center">Purchased Tickets</h1>
+</div>
     <div class="orders flex items-center justify-center flex-wrap">
     </div>
     </div>
   `;
 }
+
+export function renderHomePage(eventData) {
+  const mainContentDiv = document.querySelector('.main-content-component');
+  mainContentDiv.innerHTML = getHomePageTemplate();
+  addLoader();
+  
+  const eventsContainer = document.querySelector('.events');
+  const eventNameFilter = document.getElementById('eventNameFilter');
+  const filteredEventData = eventData.slice(); 
+  
+  eventNameFilter.addEventListener('input', () => {
+    const filteredEvents = filterEventsByName(filteredEventData, eventNameFilter.value.toLowerCase());
+    renderEvents(eventsContainer, filteredEvents);
+  });
+  
+  renderEvents(eventsContainer, filteredEventData);
+  }
+  
+  function filterEventsByName(events, nameFilter) {
+  return events.filter(event => event.name.toLowerCase().includes(nameFilter));
+  }
+  
+  function renderEvents(container, events) {
+  container.innerHTML = '';
+  
+  events.forEach(event => {
+    const eventCard = renderEventCard(event);
+    container.appendChild(eventCard);
+  });
+  setTimeout(() => {
+    removeLoader();
+  }, 800);
+      
+  }
+    
+  
+  
+  export function renderOrdersPage(orderData, eventData) {
+    const mainContentDiv = document.querySelector('.main-content-component');
+    mainContentDiv.innerHTML = getOrdersPageTemplate();
+    addLoader();
+    const ordersContainer = document.querySelector('.orders');
+    ordersContainer.innerHTML = '';
+    orderData.forEach((order) => {
+        const event = eventData.find((event) => event.eventID === order.eventID);
+        const orderCard = renderOrderCard(order);
+        ordersContainer.appendChild(orderCard);
+      });
+      setTimeout(() => {
+        removeLoader();
+      }, 800);
+  }
+  
 
 function setupNavigationEvents() {
   const navLinks = document.querySelectorAll('nav a');
@@ -84,69 +136,10 @@ async function renderContent(url) {
 }
 
 
-export const postOrder = (id, ticketID, input) => {
-  const numberOfTickets = input.value;
-  console.log(id, ticketID, input.value);
-  if (parseInt(numberOfTickets)) {
-  addLoader();
-  fetch('http://localhost:8080/orders', {
-    method: "POST",
-    headers: {
-      "Content-Type": 'application/json',
-    },
-    body: JSON.stringify({
-      eventID: id, 
-      ticketCategoryID: ticketID,
-      noOfTickets: +numberOfTickets,
-      customerId: 5
-    }),
-  }).then(async (response) => {
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.message);
-    }
-    return data;
-  })
-  .then((data) => {
-    input.value = 0;
-    console.log('order succes');
-    toastr.success('Order succesfully created!');
-  })
-  .catch((error) => {
-    console.error('error saving purchased event:', error);
-     toastr.error('Error!');
-  })
-  .finally(() => {
-    setTimeout(() => {
-      removeLoader();
-    }, 800);
-  });
-  } else {
-      toastr.error('Please enter a valid number of tickets!');
-  }
-}
-
-export const createEvent = (eventData) => {
-    const eventElement = renderEventCard(eventData);
-    return eventElement;
-};
-
-function setupFilterEvent() {
-  const applyFilterButton = document.getElementById('applyFilter');
-  console.log("ApplyFilter", applyFilterButton);
-  applyFilterButton.addEventListener('click', applyFilter);
-}
-
-function setupClearFilter() {
-  const clearFiltersButton = document.getElementById('clearFilters');
-  clearFiltersButton.addEventListener('click', clearFilters);
-}
-
 
 // Call the setup functions
 setupNavigationEvents();
 setupMobileMenuEvent();
 setupPopstateEvent();
 setupInitialPage();
-setupFilterEvent();
-setupClearFilter();
+

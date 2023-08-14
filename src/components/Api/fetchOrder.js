@@ -4,8 +4,8 @@ export async function fetchOrders() {
         if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      const eventData = await response.json();
-      return eventData;
+      const orderData = await response.json();
+      return orderData;
     } catch (error) {
       console.error('Error fetching event data:', error);
       return []; 
