@@ -1,4 +1,7 @@
 import { formatDate } from '../utils';
+import { renderOrdersPage } from '../../main';
+import { deleteOrder } from './Api/deleteOrder';
+import { fetchOrders } from './Api/fetchOrder';
 
 export function renderOrder(order, event){
     const orderCard = document.createElement('div');
@@ -27,11 +30,23 @@ export function renderOrder(order, event){
         </div>
         <div class="order-buttons">
           <button class="edit-button">Edit</button>
-          <button class="delete-button">Delete</button>
         </div>
       </div>
     </div>
   `;
     orderCard.innerHTML = contentMarkupOrders;
+
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete';
+    deleteButton.classList.add('delete-button');
+
+    deleteButton.addEventListener('click', async () => {
+      deleteOrder(order.orderID);
+    });
+  
+    const orderDetails = orderCard.querySelector('.order-details');
+    const orderButtons = orderDetails.querySelector('.order-buttons');
+    orderButtons.appendChild(deleteButton);
+
     return orderCard; 
   }

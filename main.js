@@ -3,6 +3,7 @@ import {fetchOrders} from './src/components/Api/fetchOrder';
 import {removeLoader, addLoader} from './src/components/loader';
 import { renderEventCard } from './src/components/renderEvent';
 import { renderOrder } from './src/components/renderOrder';
+import { fetchEventTypeOptions, fetchLocationOptions } from './src/components/Api/fetchEventTypeAndLocation';
 
 // Navigate to a specific URL
 function navigateTo(url) {
@@ -15,6 +16,13 @@ function getHomePageTemplate() {
       <img src="./src/assets/events2.png" alt="summer" width="3200px">
       <div class="filter">
         <input type="text" id="eventNameFilter" placeholder="Filter by Name">
+        <select id="locationFilter">
+          <option value="">All Locations</option>
+        </select>
+        <select id="eventTypeFilter">
+          <option value="">All Event Types</option>
+        </select>
+
       </div>
       <div class="events flex items-center justify-center flex-wrap">
       </div>
@@ -40,12 +48,24 @@ export function renderHomePage(eventData) {
   
   const eventsContainer = document.querySelector('.events');
   const eventNameFilter = document.getElementById('eventNameFilter');
+  const locationFilter = document.getElementById('locationFilter');
+  const eventTypeFilter = document.getElementById('eventTypeFilter');
   const filteredEventData = eventData.slice(); 
+
+  const locationOptions = fetchLocationOptions(); 
+  populateFilterOptions(locationFilter, locationOptions);
+
+  const eventTypeOptions = fetchEventTypeOptions(); 
+  populateFilterOptions(eventTypeFilter, eventTypeOptions);
   
   eventNameFilter.addEventListener('input', () => {
     const filteredEvents = filterEventsByName(filteredEventData, eventNameFilter.value.toLowerCase());
     renderEvents(eventsContainer, filteredEvents);
   });
+
+  locationFilter.addEventListener('change', filterEvents);
+  eventTypeFilter.addEventListener('change', filterEvents);
+
   
   renderEvents(eventsContainer, filteredEventData);
   }
@@ -66,6 +86,15 @@ export function renderHomePage(eventData) {
   }, 800);
       
   }
+
+  function populateFilterOptions(selectElement, options) {
+    options.forEach(option => {
+      const optionElement = document.createElement('option');
+      optionElement.value = option;
+      optionElement.textContent = option;
+      selectElement.appendChild(optionElement);
+    });
+  }
     
   
   
@@ -78,7 +107,7 @@ export function renderHomePage(eventData) {
     ordersContainer.innerHTML = '';
     orderData.forEach((order) => {
         const event = eventData.find((event) => event.eventID === order.eventID);
-        const orderCard = renderOrder(order);
+        const orderCard = renderOrder(order,);
         ordersContainer.appendChild(orderCard);
       });
       setTimeout(() => {
