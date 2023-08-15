@@ -3,7 +3,7 @@ import {fetchOrders} from './src/components/Api/fetchOrder';
 import {removeLoader, addLoader} from './src/components/loader';
 import { renderEventCard } from './src/components/renderEvent';
 import { renderOrder } from './src/components/renderOrder';
-import { fetchEventTypeOptions, fetchLocationOptions } from './src/components/Api/fetchEventTypeAndLocation';
+import { fetchEventTypeData, fetchLocationData, fetchFilteredEventData } from './src/components/Api/fetchEventTypeAndLocation';
 
 // Navigate to a specific URL
 function navigateTo(url) {
@@ -41,41 +41,49 @@ function getOrdersPageTemplate() {
   `;
 }
 
-export function renderHomePage(eventData) {
+export async function renderHomePage(eventData) {
   const mainContentDiv = document.querySelector('.main-content-component');
   mainContentDiv.innerHTML = getHomePageTemplate();
   addLoader();
   
   const eventsContainer = document.querySelector('.events');
+  
   const eventNameFilter = document.getElementById('eventNameFilter');
   const locationFilter = document.getElementById('locationFilter');
   const eventTypeFilter = document.getElementById('eventTypeFilter');
   const filteredEventData = eventData.slice(); 
 
-  const locationOptions = fetchLocationOptions(); 
-  populateFilterOptions(locationFilter, locationOptions);
+  const locationData = await fetchLocationData(); 
+  populateFilterOptions(locationFilter, locationData);
 
-  const eventTypeOptions = fetchEventTypeOptions(); 
-  populateFilterOptions(eventTypeFilter, eventTypeOptions);
+  const eventTypeData = await fetchEventTypeData(); 
+  populateFilterOptions(eventTypeFilter, eventTypeData);
   
   eventNameFilter.addEventListener('input', () => {
-    const filteredEvents = filterEventsByName(filteredEventData, eventNameFilter.value.toLowerCase());
+    const eventNameFilterValue = eventNameFilter.value.toLowerCase();
+    const filteredEvents = filterEventsByName(filteredEventData, eventNameFilterValue);
     renderEvents(eventsContainer, filteredEvents);
   });
 
-  locationFilter.addEventListener('change', filterEvents);
-  eventTypeFilter.addEventListener('change', filterEvents);
-
-  
+  locationFilter.addEventListener('change', () => filterEvents(eventsContainer)); 
+  eventTypeFilter.addEventListener('change', () => filterEvents(eventsContainer));
+  console.log("container", eventsContainer);
   renderEvents(eventsContainer, filteredEventData);
-  }
+}
+
   
   function filterEventsByName(events, nameFilter) {
   return events.filter(event => event.name.toLowerCase().includes(nameFilter));
   }
+
   
-  function renderEvents(container, events) {
-  container.innerHTML = '';
+function renderEvents(container, events) { 
+    container.innerHTML = '';
+    if (events.length === 0) {
+      container.innerHTML = '<p>No events found.</p>';
+      removeLoader();
+      return;
+    }
   
   events.forEach(event => {
     const eventCard = renderEventCard(event);
@@ -87,13 +95,29 @@ export function renderHomePage(eventData) {
       
   }
 
+  async function filterEvents(eventsContainer) {
+    const selectedLocation = locationFilter.value;
+    const selectedEventType = eventTypeFilter.value;
+
+    if (!selectedLocation && !selectedEventType) {
+      renderEvents(eventsContainer, filteredEventData);
+      return;
+    }
+    const filteredEventData = await fetchFilteredEventData(selectedEventType, selectedLocation);
+    renderEvents(eventsContainer, filteredEventData);
+
+
+  }
+
   function populateFilterOptions(selectElement, options) {
-    options.forEach(option => {
-      const optionElement = document.createElement('option');
-      optionElement.value = option;
-      optionElement.textContent = option;
-      selectElement.appendChild(optionElement);
-    });
+    if (Array.isArray(options)) {
+      options.forEach(option => {
+        const optionElement = document.createElement('option');
+        optionElement.value = option;
+        optionElement.textContent = option;
+        selectElement.appendChild(optionElement);
+      });
+    }
   }
     
   
@@ -107,7 +131,7 @@ export function renderHomePage(eventData) {
     ordersContainer.innerHTML = '';
     orderData.forEach((order) => {
         const event = eventData.find((event) => event.eventID === order.eventID);
-        const orderCard = renderOrder(order,);
+        const orderCard = renderOrder(order,event);
         ordersContainer.appendChild(orderCard);
       });
       setTimeout(() => {

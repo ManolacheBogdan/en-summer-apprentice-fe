@@ -7,7 +7,8 @@ export async function fetchOrders() {
       const orderData = await response.json();
       return orderData;
     } catch (error) {
-      console.error('Error fetching event data:', error);
+      console.error('Error fetching order data:', error);
       return []; 
     }
   }
+
