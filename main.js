@@ -41,6 +41,9 @@ function getOrdersPageTemplate() {
   `;
 }
 
+
+
+
 export async function renderHomePage(eventData) {
   const mainContentDiv = document.querySelector('.main-content-component');
   mainContentDiv.innerHTML = getHomePageTemplate();
@@ -56,8 +59,12 @@ export async function renderHomePage(eventData) {
   const locationData = await fetchLocationData(); 
   populateFilterOptions(locationFilter, locationData);
 
+
   const eventTypeData = await fetchEventTypeData(); 
   populateFilterOptions(eventTypeFilter, eventTypeData);
+
+
+
   
   eventNameFilter.addEventListener('input', () => {
     const eventNameFilterValue = eventNameFilter.value.toLowerCase();
@@ -65,9 +72,8 @@ export async function renderHomePage(eventData) {
     renderEvents(eventsContainer, filteredEvents);
   });
 
-  locationFilter.addEventListener('change', () => filterEvents(eventsContainer)); 
-  eventTypeFilter.addEventListener('change', () => filterEvents(eventsContainer));
-  console.log("container", eventsContainer);
+  locationFilter.addEventListener('change', () => filterEvents(eventsContainer, eventData)); 
+  eventTypeFilter.addEventListener('change', () => filterEvents(eventsContainer, eventData));
   renderEvents(eventsContainer, filteredEventData);
 }
 
@@ -95,18 +101,16 @@ function renderEvents(container, events) {
       
   }
 
-  async function filterEvents(eventsContainer) {
+  async function filterEvents(eventsContainer, eventData) {
     const selectedLocation = locationFilter.value;
     const selectedEventType = eventTypeFilter.value;
-
+    const filteredEventData = await fetchFilteredEventData(selectedEventType, selectedLocation);
     if (!selectedLocation && !selectedEventType) {
-      renderEvents(eventsContainer, filteredEventData);
+      renderEvents(eventsContainer, eventData);
       return;
     }
-    const filteredEventData = await fetchFilteredEventData(selectedEventType, selectedLocation);
+
     renderEvents(eventsContainer, filteredEventData);
-
-
   }
 
   function populateFilterOptions(selectElement, options) {

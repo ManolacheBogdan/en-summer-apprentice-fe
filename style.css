@@ -190,3 +190,16 @@ h1 {
   margin-left: 55px;
   margin-top: 10px;
 }
+
+.save-button, .cancel-button {
+  background-color: #9a1bde; /* Blue color */
+  color: white;
+  margin-right: 10px;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.save-button:hover, .cancel-button:hover {
+  background-color: #7f0fae; /* Darker shade of blue on hover */
+}
