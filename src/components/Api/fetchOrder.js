@@ -1,6 +1,6 @@
 export async function fetchOrders() {
     try {
-        const response = await fetch('http://localhost:8080/orders');
+        const response = await fetch('http://localhost:8080/orders/all');
         if (!response.ok) {
         throw new Error('Network response was not ok');
       }

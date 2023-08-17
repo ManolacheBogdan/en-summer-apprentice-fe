@@ -3,6 +3,8 @@ import { renderOrdersPage } from '../../main';
 import { deleteOrder } from './Api/deleteOrder';
 import { fetchOrders } from './Api/fetchOrder';
 import { updateOrder } from './Api/updateOrder';
+//import {fetchTicketCategories} from './Api/fetchTicketCategories';
+import {fetchTicketCategories} from '../components/Api/fetchOrder';
 
 export function renderOrder(order, event){
     const orderCard = document.createElement('div');
@@ -81,11 +83,13 @@ export function renderOrder(order, event){
       };
       try {
         await updateOrder(order.orderID, updatedData);
+
+        const updatedTicketCategories = await fetchTicketCategories()
         
         order.ticketCategory = editCategory;
         order.numberOfTickets = editTickets;
         
-        renderOrdersPage(orderData, eventData);
+        renderOrdersPage(orderData, eventData, );
       } catch (error) {
         console.error(error);
         toastr.error('Error updating order');
