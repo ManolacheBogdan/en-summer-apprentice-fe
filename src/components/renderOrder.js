@@ -3,8 +3,8 @@ import { renderOrdersPage } from '../../main';
 import { deleteOrder } from './Api/deleteOrder';
 import { fetchOrders } from './Api/fetchOrder';
 import { updateOrder } from './Api/updateOrder';
-//import {fetchTicketCategories} from './Api/fetchTicketCategories';
-import {fetchTicketCategories} from '../components/Api/fetchOrder';
+import {fetchTicketCategories} from './Api/fetchTicketCategories';
+
 
 export function renderOrder(order, event){
     const orderCard = document.createElement('div');
