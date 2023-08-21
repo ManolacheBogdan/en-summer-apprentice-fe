@@ -1,4 +1,4 @@
-import { formatDate } from "../utils";
+import { formatDate } from '../utils';
 import {useStyle} from './styles';
 import { addLoader, removeLoader } from './loader';
 
@@ -16,6 +16,7 @@ export function renderEventCard(event){
       5: "https://api.kissfm.ro/resized/articole/2022/08/05/untold2022-0805-044857-lr52869-alivecoverage-ctl_d7444d4c5dbae65cb5aae84735a49dac.jpg?w=800&h=600&c=1"
     };
     const { name, description, startDate, endDate, ticketCategories } = event;
+    console.log("events", event);
     const eventIndex = event.eventID; 
       const contentMarkup = `
       <header>
@@ -24,6 +25,8 @@ export function renderEventCard(event){
       <div class="content">
         <img src="${eventImageUrls[eventIndex] || 'URL_IMAGINE_LIPSA'}" alt="${name}" class="event-image w-full height-200 rounded object-cover mb-4">
         <p class="description text-gray-700">${description}</p>
+        <p class="eventType">Tip eveniment: ${event.eventTypeName}</p> 
+        <p class="location">Locatie: ${event.location.name}</p>
         <p class="date">${formatDate(startDate)} - ${formatDate(endDate)}</p>
         <label for="ticketCategories">Select ticket category:</label>
         <select name="ticketCategories" id="ticketCategories-${event.eventID}">
@@ -33,7 +36,7 @@ export function renderEventCard(event){
       </div>
     `;
     eventCard.innerHTML = contentMarkup;
-
+  //console.log("ticket", typeof ticketCategories[0].ticketCategoryID);
     const input = document.createElement('input');
     const addToCart = document.createElement('button');
     
@@ -48,6 +51,7 @@ export function renderEventCard(event){
     addToCart.addEventListener('click', () => {
       const selectTicketCategory = document.querySelector(`#ticketCategories-${event.eventID}`)
       const ticketId = selectTicketCategory.value;
+  //    console.log("type", typeof ticketId);
       postOrder(event.eventID, ticketId, input);
     });
 
@@ -58,7 +62,6 @@ export function renderEventCard(event){
   
 function postOrder(id, ticketID, input){
     const numberOfTickets = input.value;
-    console.log(id, ticketID, input.value);
     if (parseInt(numberOfTickets)) {
     addLoader();
     fetch('http://localhost:8080/orders', {
@@ -68,7 +71,7 @@ function postOrder(id, ticketID, input){
       },
       body: JSON.stringify({
         eventID: id, 
-        ticketCategoryID: ticketID,
+        ticketCategoryID: +ticketID,
         noOfTickets: +numberOfTickets,
         customerId: 5
       }),
@@ -81,7 +84,6 @@ function postOrder(id, ticketID, input){
     })
     .then((data) => {
       input.value = 0;
-      console.log('order succes');
       toastr.success('Order succesfully created!');
     })
     .catch((error) => {

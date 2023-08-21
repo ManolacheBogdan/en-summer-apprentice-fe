@@ -5,3 +5,17 @@ export function formatDate(dateArray) {
     return formattedDate;
   
   }
+
+ export async function filterEvents(eventsContainer) {
+    const selectedLocation = locationFilter.value;
+    const selectedEventType = eventTypeFilter.value;
+
+    if (!selectedLocation && !selectedEventType) {
+      renderEvents(eventsContainer, filteredEventData);
+      return;
+    }
+    const filteredEventData = await fetchFilteredEventData(selectedLocation, selectedEventType);
+    renderEvents(eventsContainer, filteredEventData);
+
+
+  }

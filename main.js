@@ -3,6 +3,7 @@ import {fetchOrders} from './src/components/Api/fetchOrder';
 import {removeLoader, addLoader} from './src/components/loader';
 import { renderEventCard } from './src/components/renderEvent';
 import { renderOrder } from './src/components/renderOrder';
+import { fetchEventTypeData, fetchLocationData, fetchFilteredEventData } from './src/components/Api/fetchEventTypeAndLocation';
 
 // Navigate to a specific URL
 function navigateTo(url) {
@@ -15,6 +16,13 @@ function getHomePageTemplate() {
       <img src="./src/assets/events2.png" alt="summer" width="3200px">
       <div class="filter">
         <input type="text" id="eventNameFilter" placeholder="Filter by Name">
+        <select id="locationFilter">
+          <option value="">All Locations</option>
+        </select>
+        <select id="eventTypeFilter">
+          <option value="">All Event Types</option>
+        </select>
+
       </div>
       <div class="events flex items-center justify-center flex-wrap">
       </div>
@@ -33,29 +41,55 @@ function getOrdersPageTemplate() {
   `;
 }
 
-export function renderHomePage(eventData) {
+
+
+
+export async function renderHomePage(eventData) {
   const mainContentDiv = document.querySelector('.main-content-component');
   mainContentDiv.innerHTML = getHomePageTemplate();
   addLoader();
   
   const eventsContainer = document.querySelector('.events');
+  
   const eventNameFilter = document.getElementById('eventNameFilter');
+  const locationFilter = document.getElementById('locationFilter');
+  const eventTypeFilter = document.getElementById('eventTypeFilter');
   const filteredEventData = eventData.slice(); 
+
+  const locationData = await fetchLocationData(); 
+  populateFilterOptions(locationFilter, locationData);
+
+
+  const eventTypeData = await fetchEventTypeData(); 
+  populateFilterOptions(eventTypeFilter, eventTypeData);
+
+
+
   
   eventNameFilter.addEventListener('input', () => {
-    const filteredEvents = filterEventsByName(filteredEventData, eventNameFilter.value.toLowerCase());
+    const eventNameFilterValue = eventNameFilter.value.toLowerCase();
+    const filteredEvents = filterEventsByName(filteredEventData, eventNameFilterValue);
     renderEvents(eventsContainer, filteredEvents);
   });
-  
+
+  locationFilter.addEventListener('change', () => filterEvents(eventsContainer, eventData)); 
+  eventTypeFilter.addEventListener('change', () => filterEvents(eventsContainer, eventData));
   renderEvents(eventsContainer, filteredEventData);
-  }
+}
+
   
   function filterEventsByName(events, nameFilter) {
   return events.filter(event => event.name.toLowerCase().includes(nameFilter));
   }
+
   
-  function renderEvents(container, events) {
-  container.innerHTML = '';
+function renderEvents(container, events) { 
+    container.innerHTML = '';
+    if (events.length === 0) {
+      container.innerHTML = '<p>No events found.</p>';
+      removeLoader();
+      return;
+    }
   
   events.forEach(event => {
     const eventCard = renderEventCard(event);
@@ -65,6 +99,29 @@ export function renderHomePage(eventData) {
     removeLoader();
   }, 800);
       
+  }
+
+  async function filterEvents(eventsContainer, eventData) {
+    const selectedLocation = locationFilter.value;
+    const selectedEventType = eventTypeFilter.value;
+    const filteredEventData = await fetchFilteredEventData(selectedEventType, selectedLocation);
+    if (!selectedLocation && !selectedEventType) {
+      renderEvents(eventsContainer, eventData);
+      return;
+    }
+
+    renderEvents(eventsContainer, filteredEventData);
+  }
+
+  function populateFilterOptions(selectElement, options) {
+    if (Array.isArray(options)) {
+      options.forEach(option => {
+        const optionElement = document.createElement('option');
+        optionElement.value = option;
+        optionElement.textContent = option;
+        selectElement.appendChild(optionElement);
+      });
+    }
   }
     
   
@@ -78,7 +135,7 @@ export function renderHomePage(eventData) {
     ordersContainer.innerHTML = '';
     orderData.forEach((order) => {
         const event = eventData.find((event) => event.eventID === order.eventID);
-        const orderCard = renderOrder(order);
+        const orderCard = renderOrder(order,event);
         ordersContainer.appendChild(orderCard);
       });
       setTimeout(() => {
