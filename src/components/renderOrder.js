@@ -6,8 +6,15 @@ import { updateOrder } from './Api/updateOrder';
 import {fetchTicketCategories} from './Api/fetchTicketCategories';
 
 
+
 export function renderOrder(order, event){
     const orderCard = document.createElement('div');
+     orderCard.id = `order-${order.orderID}`;
+     const categories = event.ticketCategories;
+     const categoriesOptions = categories
+       .map(
+         (ticket_Category) =>
+           `<option value="${ticket_Category.ticketCategoryID}" ${ticket_Category.ticketCategoryID === order.ticketCategoryID ? 'selected' : ''}>${ticket_Category.ticketDescription}</option>`).join('\n');;
     const contentMarkupOrders = `
     <div class='orders-content'>
       <div class="order-details">
@@ -17,14 +24,13 @@ export function renderOrder(order, event){
         </div>
         <div class="order-field">
           <span class="field-name">Event Name:</span>
-          <span class="field-value">${event ? event.eventName : 'Unknown Event'}</span>
+          <span class="field-value">${event ? event.name : 'Unknown Event'}</span>
         </div>
         <div class="order-field">
         <label for="editCategory">Ticket Category:</label>
-          <select id="editCategory" disabled>
-             <option value="Standard" ${order.ticketCategory === 'Standard' ? 'selected' : ''}>Standard</option>
-             <option value="VIP" ${order.ticketCategory === 'VIP' ? 'selected' : ''}>VIP</option>
-          </select>
+        <select id="editCategory" disabled>
+        ${categoriesOptions}
+      </select>
         </div>
         <div class="order-field">
         <label for="editTickets">Number of Tickets:</label>
@@ -47,7 +53,8 @@ export function renderOrder(order, event){
     </div>
   `;
     orderCard.innerHTML = contentMarkupOrders;
-
+   
+    
     const editButton = orderCard.querySelector('.edit-button');
     const saveButton = orderCard.querySelector('.save-button');
     const cancelButton = orderCard.querySelector('.cancel-button');
@@ -55,6 +62,9 @@ export function renderOrder(order, event){
     const editCategoryInput = orderCard.querySelector('#editCategory');
     const editTicketsInput = orderCard.querySelector('#editTickets');
   
+    editCategoryInput.innerHTML = categoriesOptions;
+    editCategoryInput.disabled = true;
+    
     editButton.addEventListener('click', () => {
       editCategoryInput.removeAttribute('disabled');
       editTicketsInput.removeAttribute('disabled');
@@ -79,17 +89,16 @@ export function renderOrder(order, event){
       const updatedData = {
         OrderId: order.orderID,
         NumberOfTickets: editTickets,
-        TicketCategory: editCategory,
+        TicketCategoryId: parseInt(editCategory),
       };
-      try {
-        await updateOrder(order.orderID, updatedData);
 
-        const updatedTicketCategories = await fetchTicketCategories()
-        
+      
+
+      try {
+        await updateOrder(updatedData);
         order.ticketCategory = editCategory;
         order.numberOfTickets = editTickets;
-        
-        renderOrdersPage(orderData, eventData, );
+        updateOrderCard(orderCard, order, event);
       } catch (error) {
         console.error(error);
         toastr.error('Error updating order');
@@ -103,6 +112,7 @@ export function renderOrder(order, event){
 
     deleteButton.addEventListener('click', async () => {
       deleteOrder(order.orderID);
+      removeOrderCard(order.orderID);
     });
 
     const orderButtons = orderDetails.querySelector('.order-buttons');
@@ -110,3 +120,19 @@ export function renderOrder(order, event){
 
     return orderCard; 
   }
+
+  function removeOrderCard(orderID) {
+  const orderCard = document.getElementById(`order-${orderID}`);
+  if (orderCard) {
+    orderCard.remove();
+  }
+}
+
+
+function updateOrderCard(orderCard, order, event) {
+  const fieldValues = orderCard.querySelectorAll('.field-value');
+  fieldValues[0].textContent = event ? event.name : 'Unknown Event';
+  fieldValues[1].textContent = order.ticketCategory;
+  fieldValues[2].textContent = order.numberOfTickets;
+  fieldValues[3].textContent = order.totalPrice;
+}

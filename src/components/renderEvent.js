@@ -36,7 +36,7 @@ export function renderEventCard(event){
       </div>
     `;
     eventCard.innerHTML = contentMarkup;
-
+  //console.log("ticket", typeof ticketCategories[0].ticketCategoryID);
     const input = document.createElement('input');
     const addToCart = document.createElement('button');
     
@@ -51,6 +51,7 @@ export function renderEventCard(event){
     addToCart.addEventListener('click', () => {
       const selectTicketCategory = document.querySelector(`#ticketCategories-${event.eventID}`)
       const ticketId = selectTicketCategory.value;
+  //    console.log("type", typeof ticketId);
       postOrder(event.eventID, ticketId, input);
     });
 
@@ -70,7 +71,7 @@ function postOrder(id, ticketID, input){
       },
       body: JSON.stringify({
         eventID: id, 
-        ticketCategoryID: ticketID,
+        ticketCategoryID: +ticketID,
         noOfTickets: +numberOfTickets,
         customerId: 5
       }),
