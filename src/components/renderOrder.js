@@ -86,6 +86,13 @@ export function renderOrder(order, event){
     saveButton.addEventListener('click', async () => {
       const editCategory = editCategoryInput.value;
       const editTickets = parseInt(editTicketsInput.value);
+      
+      const selectedTicketCategory = event.ticketCategories.find(
+        ticketCategory => ticketCategory.ticketCategoryID === parseInt(editCategory)
+      );
+    
+      const pricePerTicket = selectedTicketCategory.price;
+
       const updatedData = {
         OrderId: order.orderID,
         NumberOfTickets: editTickets,
@@ -98,6 +105,13 @@ export function renderOrder(order, event){
         await updateOrder(updatedData);
         order.ticketCategory = editCategory;
         order.numberOfTickets = editTickets;
+       
+        const newTotalPrice = pricePerTicket * editTickets;
+
+        order.totalPrice = newTotalPrice;
+        const fieldValues = orderCard.querySelectorAll('.field-value');
+        fieldValues[3].textContent = newTotalPrice;
+      
         updateOrderCard(orderCard, order, event);
       } catch (error) {
         console.error(error);
@@ -131,8 +145,7 @@ export function renderOrder(order, event){
 
 function updateOrderCard(orderCard, order, event) {
   const fieldValues = orderCard.querySelectorAll('.field-value');
-  fieldValues[0].textContent = event ? event.name : 'Unknown Event';
-  fieldValues[1].textContent = order.ticketCategory;
-  fieldValues[2].textContent = order.numberOfTickets;
+  fieldValues[1].textContent = event ? event.name : 'Unknown Event';
+  fieldValues[2].textContent = formatDate(order.orderedAt);
   fieldValues[3].textContent = order.totalPrice;
 }

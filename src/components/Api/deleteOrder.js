@@ -2,7 +2,7 @@ import { addLoader, removeLoader } from "../loader";
 
 export async function deleteOrder(orderID) {
     addLoader();
-    fetch(`http://172.16.99.89:7007/api/OrderDelete?id=${orderID}`, {
+    fetch(`http://192.168.1.105:7007/api/OrderDelete?id=${orderID}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
